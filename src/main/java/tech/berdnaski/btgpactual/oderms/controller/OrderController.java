@@ -8,6 +8,8 @@ import tech.berdnaski.btgpactual.oderms.controller.dto.OrderResponse;
 import tech.berdnaski.btgpactual.oderms.controller.dto.PaginationResponse;
 import tech.berdnaski.btgpactual.oderms.service.OrderService;
 
+import java.util.Map;
+
 @RestController
 public class OrderController {
 
@@ -22,8 +24,10 @@ public class OrderController {
                                                                  @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize){
 
         var pageResponse = orderService.findAllByCustomerId(customerId, PageRequest.of(page, pageSize));
+        var totalOnOrders = orderService.findTotalOnOrdersByCustomerId(customerId);
 
         return ResponseEntity.ok(new ApiResponse<>(
+                Map.of("totalOnOrders", totalOnOrders),
                 pageResponse.getContent(),
                 PaginationResponse.fromPage(pageResponse)
         ));
