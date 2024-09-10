@@ -1,6 +1,9 @@
 package tech.berdnaski.btgpactual.oderms.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import tech.berdnaski.btgpactual.oderms.controller.dto.OrderResponse;
 import tech.berdnaski.btgpactual.oderms.entities.OrderEntity;
 import tech.berdnaski.btgpactual.oderms.entities.OrderItem;
 import tech.berdnaski.btgpactual.oderms.listener.dto.OrderCreatedEvent;
@@ -28,6 +31,12 @@ public class OrderService {
         entity.setTotal(getTotal(event));
 
         orderRepository.save(entity);
+    }
+
+    public Page<OrderResponse> findAllByCustomerId(Long customerId, PageRequest pageRequest) {
+        var orders = orderRepository.findAllByCustomerId(customerId, pageRequest);
+
+        return orders.map(OrderResponse::fromEntity);
     }
 
     private BigDecimal getTotal(OrderCreatedEvent event) {
